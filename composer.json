@@ -19,11 +19,11 @@
   },
   "require": {
     "php": ">5.4",
-    "silex/silex": "~1.2",
-    "twig/twig": "~1.18",
-    "michelf/php-markdown": "~1.5",
-    "symfony/yaml": "~2.6",
-    "symfony/twig-bridge": "~2.6",
-    "symfony/finder": "~2.6"
+    "silex/silex": "^2.0",
+    "twig/twig": "^1.18",
+    "michelf/php-markdown": "^1.5",
+    "symfony/yaml": "^3.0",
+    "symfony/twig-bridge": "^3.0",
+    "symfony/finder": "^3.0"
   }
 }
