@@ -2,7 +2,8 @@
 
 namespace Stylex;
 
-use Michelf\Markdown;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Environment;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
@@ -46,7 +47,7 @@ class ServiceProvider implements ServiceProviderInterface, ControllerProviderInt
             foreach ($finder as $file) {
                 list(, $data, $body) = explode("---\n", $file->getContents());
                 $data = $app['yaml']->parse($data);
-                $data['content'] = Markdown::defaultTransform($body);
+                $data['content'] = $app['commonmark']->convertToHtml($body);
                 $content[basename(dirname($file->getPathname()))][] = $data;
                 $content[basename(dirname($file->getPathname()))][$file->getBasename('.md')] = $data;
             }
@@ -99,5 +100,21 @@ class ServiceProvider implements ServiceProviderInterface, ControllerProviderInt
         $pimple['finder'] = $pimple->factory(function () {
             return new Finder();
         });
+
+        $pimple['commonmark.environment'] = function () {
+            $environment = Environment::createCommonMarkEnvironment();
+
+            return $environment;
+        };
+
+        $pimple['commonmark.config'] = [
+          'html_input' => 'escape',
+        ];
+
+        $pimple['commonmark'] = function (Container $c) {
+            $converter = new CommonMarkConverter($c['commonmark.config'], $c['commonmark.environment']);
+
+            return $converter;
+        };
     }
 }
